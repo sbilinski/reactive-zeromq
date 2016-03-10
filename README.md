@@ -5,5 +5,7 @@ implementing flows with [ZeroMQ](http://zeromq.org) sockets, inspired by [Reacti
 
 * `PUB` socket sink
 * `SUB` socket source
+* `PUSH` socket sink
+* `PULL` socket source
 
 Internal communication is currently implemented using [JeroMQ](https://github.com/zeromq/jeromq) (a pure Java implementation of ZMQ).

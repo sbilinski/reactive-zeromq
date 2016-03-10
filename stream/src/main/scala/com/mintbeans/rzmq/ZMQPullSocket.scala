@@ -10,19 +10,18 @@ import org.zeromq.{ ZContext, ZMQ, ZMsg }
 
 import scala.collection.JavaConverters._
 
-private[rzmq] class ZMQSubSocket(endpoint: String, topic: String) extends GraphStage[SourceShape[ZMQMessage]] with LazyLogging {
+private[rzmq] class ZMQPullSocket(endpoint: String) extends GraphStage[SourceShape[ZMQMessage]] with LazyLogging {
 
-  val out: Outlet[ZMQMessage] = Outlet("ZMQSubSocket")
+  val out: Outlet[ZMQMessage] = Outlet("ZMQPullSocket")
   override val shape: SourceShape[ZMQMessage] = SourceShape(out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
     logger.info("Initializing ZMQ context.")
     val context = new ZContext(1)
-    logger.info(s"Connecting SUB socket to ${endpoint}")
+    logger.info(s"Binding PULL socket to ${endpoint}")
     val socket = {
-      val s = context.createSocket(ZMQ.SUB)
-      s.subscribe(topic.getBytes(ZMQ.CHARSET))
-      s.connect(endpoint)
+      val s = context.createSocket(ZMQ.PULL)
+      s.bind(endpoint)
       s
     }
 
@@ -43,8 +42,8 @@ private[rzmq] class ZMQSubSocket(endpoint: String, topic: String) extends GraphS
         Option(ZMsg.recvMsg(socket)).map { zMsg =>
           zMsg.asScala.toList.map(zFrame => ByteString(zFrame.getData))
         }.map {
-          case topic :: payload :: Nil => {
-            logger.debug(s"Received topic (${topic}) message: ${payload}")
+          case payload :: Nil => {
+            logger.debug(s"Received message: ${payload}")
             push(out, ZMQMessage(payload))
           }
           case _ => fail(out, new MessageFormatException("Invalid message format"))

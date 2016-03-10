@@ -19,6 +19,18 @@ private[rzmq] trait FakeZMQEndpoints {
     session(socket)(block)
   }
 
+  def zmqPushSession(endpoint: String)(block: ZMQ.Socket => Unit) = {
+    val socket = fakeContext.createSocket(ZMQ.PUSH)
+    socket.connect(endpoint)
+    session(socket)(block)
+  }
+
+  def zmqPullSession(endpoint: String)(block: ZMQ.Socket => Unit) = {
+    val socket = fakeContext.createSocket(ZMQ.PULL)
+    socket.bind(endpoint)
+    session(socket)(block)
+  }
+
   private def session(socket: ZMQ.Socket)(block: ZMQ.Socket => Unit): Unit = {
     try {
       block(socket)

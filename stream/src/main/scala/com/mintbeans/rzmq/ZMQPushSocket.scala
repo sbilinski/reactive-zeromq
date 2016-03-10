@@ -7,20 +7,20 @@ import com.mintbeans.rzmq.ZMQMessages._
 import com.typesafe.scalalogging.LazyLogging
 import org.zeromq.{ ZContext, ZMQ }
 
-private[rzmq] class ZMQPubSocket(endpoint: String, topic: String) extends GraphStage[SinkShape[ZMQMessage]] with LazyLogging {
+private[rzmq] class ZMQPushSocket(endpoint: String) extends GraphStage[SinkShape[ZMQMessage]] with LazyLogging {
 
-  private val in: Inlet[ZMQMessage] = Inlet("ZMQPubSocket")
+  private val in: Inlet[ZMQMessage] = Inlet("ZMQPushSocket")
 
   override def shape: SinkShape[ZMQMessage] = SinkShape(in)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
     logger.info("Initializing ZMQ context.")
     val context = new ZContext(1)
-    logger.info(s"Binding PUB socket to ${endpoint}")
+    logger.info(s"Binding PUSH socket to ${endpoint}")
     val socket = {
-      val s = context.createSocket(ZMQ.PUB)
+      val s = context.createSocket(ZMQ.PUSH)
       s.setSendTimeOut(0)
-      s.bind(endpoint)
+      s.connect(endpoint)
       s
     }
 
@@ -44,11 +44,11 @@ private[rzmq] class ZMQPubSocket(endpoint: String, topic: String) extends GraphS
         val message = grab(in)
 
         logger.debug(s"Sending message to ZMQ: ${message}")
-        if (!message.zMsgWithTopic(topic).send(socket)) {
-          failStage(new SendFailedException(s"Send failed: topic=${topic}"))
+        if (!message.zMsg().send(socket)) {
+          failStage(new SendFailedException("Send failed"))
         }
 
-        pull(in)
+        tryPull(in)
       }
     }
   }
