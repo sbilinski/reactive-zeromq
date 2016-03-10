@@ -5,6 +5,7 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{ Source, Sink }
 import akka.testkit.TestKit
 import akka.util.ByteString
+import com.mintbeans.rzmq.ZMQMessages._
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest._

@@ -3,17 +3,12 @@ package com.mintbeans.rzmq
 import akka.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 import akka.stream.{ Attributes, Outlet, SourceShape }
 import akka.util.ByteString
-import com.mintbeans.rzmq.ZMQSubSocket.{ MessageFormatException, ReadFailedException }
+import com.mintbeans.rzmq.ZMQErrors._
+import com.mintbeans.rzmq.ZMQMessages._
 import com.typesafe.scalalogging.LazyLogging
 import org.zeromq.{ ZContext, ZMQ, ZMsg }
 
 import scala.collection.JavaConverters._
-import scala.util.control.NoStackTrace
-
-private[rzmq] object ZMQSubSocket {
-  final class MessageFormatException(msg: String) extends ZMQException(msg) with NoStackTrace
-  final class ReadFailedException(msg: String) extends ZMQException(msg) with NoStackTrace
-}
 
 private[rzmq] class ZMQSubSocket(endpoint: String, topic: String) extends GraphStage[SourceShape[ZMQMessage]] with LazyLogging {
 

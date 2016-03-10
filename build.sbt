@@ -41,9 +41,14 @@ lazy val commonSettings = Seq(
 // 
 // Projects
 //
+lazy val core     = project.in(file("core"))
+                           .settings(commonSettings: _*)
+                           .settings(SbtScalariform.scalariformSettings: _*)
+
 lazy val stream   = project.in(file("stream"))
                            .settings(commonSettings: _*)
                            .settings(SbtScalariform.scalariformSettings: _*)
+                           .dependsOn(core)
 
 lazy val examples = project.in(file("examples"))
                            .settings(commonSettings: _*)

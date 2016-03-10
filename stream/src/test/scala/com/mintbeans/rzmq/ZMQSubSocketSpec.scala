@@ -5,6 +5,7 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{ Sink, Source }
 import akka.testkit.{ TestKit, TestProbe }
 import akka.util.ByteString
+import com.mintbeans.rzmq.ZMQMessages._
 import org.scalatest.{ GivenWhenThen, BeforeAndAfterAll, Matchers, WordSpecLike }
 import org.zeromq.ZContext
 

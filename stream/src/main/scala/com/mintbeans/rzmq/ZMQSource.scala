@@ -2,6 +2,7 @@ package com.mintbeans.rzmq
 
 import akka.NotUsed
 import akka.stream.scaladsl.Source
+import com.mintbeans.rzmq.ZMQMessages._
 
 object ZMQSource {
   def subSocket(endpoint: String, topic: String): Source[ZMQMessage, NotUsed] =

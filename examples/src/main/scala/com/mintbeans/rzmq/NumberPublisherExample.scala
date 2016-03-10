@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
+import com.mintbeans.rzmq.ZMQMessages._
 import com.typesafe.scalalogging.LazyLogging
 
 object NumberPublisherExample extends App with LazyLogging {

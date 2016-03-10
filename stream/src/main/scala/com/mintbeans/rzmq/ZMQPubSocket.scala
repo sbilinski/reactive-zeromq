@@ -2,15 +2,10 @@ package com.mintbeans.rzmq
 
 import akka.stream.stage.{ GraphStage, GraphStageLogic, InHandler }
 import akka.stream.{ Attributes, Inlet, SinkShape }
-import com.mintbeans.rzmq.ZMQPubSocket.SendFailedException
+import com.mintbeans.rzmq.ZMQErrors._
+import com.mintbeans.rzmq.ZMQMessages._
 import com.typesafe.scalalogging.LazyLogging
 import org.zeromq.{ ZContext, ZMQ }
-
-import scala.util.control.NoStackTrace
-
-private[rzmq] object ZMQPubSocket {
-  final class SendFailedException(msg: String) extends ZMQException(msg) with NoStackTrace
-}
 
 private[rzmq] class ZMQPubSocket(endpoint: String, topic: String) extends GraphStage[SinkShape[ZMQMessage]] with LazyLogging {
 
