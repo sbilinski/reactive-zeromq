@@ -7,7 +7,7 @@ lazy val commonSettings = Seq(
   organization  := "com.mintbeans",
   version       := "0.1",
   startYear     := Some(2016),
-  scalaVersion  := "2.11.8",
+  scalaVersion  := "2.11.7",
   updateOptions := updateOptions.value.withCachedResolution(true),
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-encoding", "utf8"),
   resolvers     ++= Seq(
@@ -63,5 +63,22 @@ lazy val examples = project.in(file("examples"))
                            )
                            .dependsOn(stream)
 
-lazy val root     = project.in(file(".")).aggregate(stream, examples)
+lazy val benchmarks = project
+                           .in(file("benchmarks"))
+                           .enablePlugins(GatlingPlugin)
+                           .settings(commonSettings: _*)
+                           .settings(SbtScalariform.scalariformSettings: _*)
+                           .settings(
+                             libraryDependencies ++= {
+                               val gatlingVersion = "2.2.0-M3"
+                               Seq(
+                                 "io.gatling.highcharts" % "gatling-charts-highcharts" % gatlingVersion,
+                                 "io.gatling"            % "gatling-test-framework"    % gatlingVersion
+                               )
+                             },
+                             javaOptions in Gatling := overrideDefaultJavaOptions("-Xms256m", "-Xmx256m")
+                           )
+                           .dependsOn(stream)
+
+lazy val root     = project.in(file(".")).aggregate(core, stream, examples, benchmarks)
 

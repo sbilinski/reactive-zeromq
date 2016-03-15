@@ -9,3 +9,9 @@ implementing flows with [ZeroMQ](http://zeromq.org) sockets, inspired by [Reacti
 * `PULL` socket source
 
 Internal communication is currently implemented using [JeroMQ](https://github.com/zeromq/jeromq) (a pure Java implementation of ZMQ).
+
+## Gatling Tests
+
+A DSL for building **ZeroMQ** load tests is provided by the **benchmarks** module. To run sample tests:
+
+    sbt benchmarks/gatling-it:test 
